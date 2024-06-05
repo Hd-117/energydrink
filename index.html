@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Bebidas Energéticas</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background: linear-gradient(45deg, #333, #111);
+            color: #fff;
+        }
+        h1 {
+            text-align: center;
+            color: #6cd83a;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #6cd83a;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #6cd83a;
+            border-radius: 5px;
+            box-sizing: border-box;
+            color: #111;
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5);
+            outline: none;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #6cd83a;
+            color: #111;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #4ea524;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #6cd83a;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .energy-drink {
+            display: inline-block;
+            width: 100px;
+            height: 200px;
+            background-image: url('energy-drink.png'); /* URL de la imagen de la bebida energética */
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        .half {
+            width: 25px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Bebidas Energéticas</h1>
+    <form id="calculatorForm">
+        <div class="form-group">
+            <label for="gender">Género:</label>
+            <select id="gender" required>
+                <option value="male">Hombre</option>
+                <option value="female">Mujer</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="age">Edad (años):</label>
+            <input type="number" id="age" required>
+        </div>
+        <div class="form-group">
+            <label for="weight">Peso (kg):</label>
+            <input type="number" id="weight" required>
+        </div>
+        <div class="form-group">
+            <label for="height">Altura (cm):</label>
+            <input type="number" id="height" required>
+        </div>
+        <div class="form-group">
+            <label for="activity">Nivel de actividad física:</label>
+            <select id="activity" required>
+                <option value="sedentary">Sedentario</option>
+                <option value="lightly_active">Ligeramente activo</option>
+                <option value="moderate">Moderado</option>
+                <option value="active">Activo</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="conditions">Patologías preexistentes:</label>
+            <select id="conditions">
+                <option value="none">Ninguna</option>
+                <option value="diabetes">Diabetes</option>
+                <option value="hypertension">Hipertensión</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="bodyFat">Porcentaje de grasa corporal (opcional):</label>
+            <input type="number" id="bodyFat">
+        </div>
+        <button type="button" onclick="calculate()">Calcular</button>
+    </form>
+    <div class="result" id="result"></div>
+
+    <script>
+        function calculate() {
+            const gender = document.getElementById('gender').value;
+            const age = parseInt(document.getElementById('age').value);
+            const weight = parseInt(document.getElementById('weight').value);
+            const height = parseInt(document.getElementById('height').value);
+            const activity = document.getElementById('activity').value;
+            const conditions = document.getElementById('conditions').value;
+            const bodyFat = parseFloat(document.getElementById('bodyFat').value) || 0;
+
+            console.log('Datos ingresados:');
+            console.log('Género:', gender);
+            console.log('Edad:', age);
+            console.log('Peso:', weight);
+            console.log('Altura:', height);
+            console.log('Nivel de actividad:', activity);
+            console.log('Patologías preexistentes:', conditions);
+            console.log('Porcentaje de grasa corporal:', bodyFat);
+
+            // Calcular el metabolismo basal (BMR) usando la fórmula de Harris-Benedict
+            let bmr;
+            if (bodyFat) {
+                bmr = 370 + (21.6 * (weight * (1 - (bodyFat / 100))));
+            } else {
+                if (gender === 'male') {
+                    bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5; // Fórmula para hombres
+                } else {
+                    bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161; // Fórmula para mujeres
+                }
+            }
+
+            console.log('Metabolismo basal (BMR):', bmr);
+
+            // Ajustar BMR según el nivel de actividad
+            let dailyCalories;
+            switch (activity) {
+                case 'sedentary':
+                    dailyCalories = bmr * 1.2;
+                    break;
+                case 'lightly_active':
+                    dailyCalories = bmr * 1.375;
+                    break;
+                case 'moderate':
+                    dailyCalories = bmr * 1.55;
+                    break;
+                case 'active':
+                    dailyCalories = bmr * 1.9;
+                    break;
+            }
+
+            console.log('Calorías diarias ajustadas por nivel de actividad:', dailyCalories);
+
+            // Ajustar límites de consumo de bebidas energéticas según las patologías
+            let maxCaffeine = weight * 6; // 6 mg de cafeína por kg de peso corporal
+            let maxCaloriesFromEnergyDrinks = dailyCalories * 0.1;
+
+            console.log('Límite máximo de cafeína (mg):', maxCaffeine);
+            console.log('Calorías máximas de bebidas energéticas:', maxCaloriesFromEnergyDrinks);
+
+            if (conditions === 'diabetes') {
+                maxCaloriesFromEnergyDrinks = 0; // No recomendado
+            } else if (conditions === 'hypertension') {
+                maxCaffeine = weight * 4; // Reducir el límite de cafeína a 4 mg por kg de peso corporal
+            }
+
+            console.log('Límite máximo de cafeína ajustado por patologías (mg):', maxCaffeine);
+            console.log('Calorías máximas de bebidas energéticas ajustadas por patologías:', maxCaloriesFromEnergyDrinks);
+
+            // Calcular el número recomendado de bebidas energéticas
+            const caloriesPerEnergyDrink = 110; // Ejemplo de calorías por lata de bebida energética
+            const caffeinePerEnergyDrink = 80; // Ejemplo de cafeína por lata de bebida energética
+
+            let maxEnergyDrinksByCalories = Math.floor(maxCaloriesFromEnergyDrinks / caloriesPerEnergyDrink);
+            let maxEnergyDrinksByCaffeine = Math.floor(maxCaffeine / caffeinePerEnergyDrink);
+
+            console.log('Máximo de bebidas energéticas por calorías:', maxEnergyDrinksByCalories);
+            console.log('Máximo de bebidas energéticas por cafeína:', maxEnergyDrinksByCaffeine);
+
+            let recommendedDrinks = Math.min(maxEnergyDrinksByCalories, maxEnergyDrinksByCaffeine);
+
+            console.log('Número máximo de bebidas energéticas recomendado:', recommendedDrinks);
+
+            let resultMessage;
+            if (conditions === 'diabetes') {
+                resultMessage = 'No se recomienda el consumo de bebidas energéticas debido a tu condición de diabetes.';
+            } else if (recommendedDrinks > 0) {
+                resultMessage = `Basado en tus datos, se recomienda un máximo de ${recommendedDrinks} bebida(s) energética(s) al día.`;
+            } else {
+                resultMessage = 'Se recomienda no consumir bebidas energéticas debido a tu perfil de salud.';
+            }
+
+            document.getElementById('result').innerHTML = `
+                <p>${resultMessage}</p>
+                ${renderEnergyDrinks(recommendedDrinks)}
+            `;
+        }
+
+        function renderEnergyDrinks(recommendedDrinks) {
+            const fullDrinks = Math.floor(recommendedDrinks);
+            const halfDrink = recommendedDrinks % 1 !== 0;
+            let drinksHtml = '';
+
+            for (let i = 0; i < fullDrinks; i++) {
+                drinksHtml += '<div class="energy-drink"></div>';
+            }
+
+            if (halfDrink) {
+                drinksHtml += '<div class="energy-drink half"></div>';
+            }
+
+            return drinksHtml;
+        }
+    </script>
+</body>
+</html>
+
